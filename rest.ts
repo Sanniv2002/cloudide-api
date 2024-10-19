@@ -9,6 +9,7 @@ import {
   updateProjectStatus,
 } from "./utils/db";
 import { generateAlias, findFreePort } from "./utils/helperUtils";
+import { createDNSRecordInCloudflareZone, removeDNSRecordInCloudflareZone } from "./utils/cloudflare";
 
 const app = express();
 const initScriptPath = "./init.sh";
@@ -33,12 +34,22 @@ app.post("/api/v1/start", async (req, res) => {
   const PORT = await findFreePort();
   const args = [alias, environment, PORT];
 
-  // Create entry in db
-  await createProject(alias, environment, PORT, name, userId);
-
   try {
-    const { stdout } = await execFile(initScriptPath, args);
+    //Create DNS Record for the alias
+    const result = await createDNSRecordInCloudflareZone(
+      "A",
+      alias,
+      process.env.EC2_URI as string,
+      `DNS Record for resource aliased as ${alias}`
+    );
 
+    const dns_record_id = result.result.id;
+
+    // Create entry in db
+    await createProject(alias, environment, PORT, name, dns_record_id, userId);
+
+    const { stdout } = await execFile(initScriptPath, args);
+    
     await updateProjectStatus(alias, "RUNNING");
 
     res.status(200).json({
@@ -149,6 +160,9 @@ app.delete("/api/v1/terminate", async (req, res) => {
       });
       return;
     }
+
+    await removeDNSRecordInCloudflareZone(project.dns_record_id)
+
     const { stdout, stderr } = await execFile(terminateScriptPath, args);
 
     await updateProjectStatus(alias, "TERMINATED", {
@@ -199,6 +213,25 @@ app.get("/api/v1/resource/:alias", async (req, res) => {
 app.get("/api/v1/resources", async (_, res) => {
   const result = await getAllProjects();
   res.status(200).json(result);
+});
+
+app.get("/list_dns_records", (_, res) => {
+  const myHeaders = new Headers();
+  myHeaders.append("Content-Type", "application/json");
+  myHeaders.append("X-Auth-Key", process.env.X_Auth_Key as string);
+  myHeaders.append("X-Auth-Email", process.env.X_Auth_Email as string);
+  const requestOptions = {
+    method: "GET",
+    headers: myHeaders,
+    redirect: "follow" as RequestRedirect,
+  };
+  fetch(
+    `https://api.cloudflare.com/client/v4/zones/${process.env.ZONE_ID}/dns_records`,
+    requestOptions
+  )
+    .then((response) => response.text())
+    .then((result) => res.status(200).json(JSON.parse(result)))
+    .catch((error) => console.error(error));
 });
 
 export default app;

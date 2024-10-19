@@ -8,6 +8,7 @@ export const createProject = async (
   environment: string,
   port: number,
   name: string,
+  dns_record_id: string,
   userId: number
 ) => {
   return await prisma.projects.create({
@@ -15,6 +16,7 @@ export const createProject = async (
       alias: alias,
       environment: environment,
       PORT: port,
+      dns_record_id: dns_record_id,
       name: name,
       author: {
         connect: {
