@@ -20,7 +20,7 @@ const execFile = promisify(child_process.execFile);
 app.use(CORS());
 app.use(express.json());
 
-app.get("/api/v1", (_, res) => {
+app.get("", (_, res) => {
   res.status(200).json({
     message: "Server is healthy",
   });
