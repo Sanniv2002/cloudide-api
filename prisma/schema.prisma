@@ -25,16 +25,27 @@ model User {
 }
 
 model Projects {
-  id          String   @id @default(uuid())
-  alias       String   @unique
+  id          String    @id @default(uuid())
+  alias       String    @unique
   environment String
+  PORT        Int?      @unique
   name        String
-  createdAt   DateTime @default(now())
+  createdAt   DateTime  @default(now())
+  resumedAt   DateTime?
+  stoppedAt   DateTime?
+  status      Status    @default(FAILED)
   authorId    Int
-  author      User     @relation(fields: [authorId], references: [id])
+  author      User      @relation(fields: [authorId], references: [id])
 }
 
 enum Role {
   USER
   ADMIN
+}
+
+enum Status {
+  FAILED
+  RUNNING
+  STOPPED
+  TERMINATED
 }

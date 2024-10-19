@@ -7,6 +7,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/node": "^22.7.6",
+    "esbuild": "^0.24.0",
     "prisma": "5.21.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3"
@@ -19,7 +20,8 @@
     "cors": "^2.8.5",
     "express": "^4.21.1"
   },
-  "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+  "scripts": {
+    "seed":"esbuild prisma/seed.ts --outfile=node_modules/tmp-seed.cjs --bundle --format=cjs --external:prisma --external:@prisma/client && node node_modules/tmp-seed.cjs --preview-feature",
+    "build": "bun build ./index.ts --outdir ./build"
   }
 }

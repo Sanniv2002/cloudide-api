@@ -4,22 +4,23 @@ const prisma = new PrismaClient();
 
 async function main() {
   const alice = await prisma.user.upsert({
-    where: { email: "alice@prisma.io" },
+    where: { email: "sanniv.nitkkr@gmail.com" },
     update: {},
     create: {
-      email: "alice@prisma.io",
-      name: "Alice",
+      email: "sanniv.nitkkr@gmail.com",
+      name: "Sanniv",
+      role: 'ADMIN'
     },
   });
-  const bob = await prisma.user.upsert({
-    where: { email: "bob@prisma.io" },
-    update: {},
-    create: {
-      email: "bob@prisma.io",
-      name: "Bob",
-    },
-  });
-  console.log({ alice, bob });
+  // const bob = await prisma.user.upsert({
+  //   where: { email: "bob@prisma.io" },
+  //   update: {},
+  //   create: {
+  //     email: "bob@prisma.io",
+  //     name: "Bob",
+  //   },
+  // });
+  // console.log({ alice, bob });
 }
 
 main()

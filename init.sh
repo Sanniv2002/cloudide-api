@@ -20,8 +20,9 @@ find_free_port() {
   done
 }
 
-APP_PORT=$(find_free_port)
+APP_PORT=$3
 REDIS_PORT=$(find_free_port)
+echo -e "$APP_PORT"
 
 NETWORK_NAME="${PROJECT_NAME}_network"
 CACHE_VOLUME_NAME="cache_${PROJECT_NAME}"
@@ -32,7 +33,7 @@ if [[ "$ENV" == "node" ]]; then
 services:
   runner:
     container_name: runner-${PROJECT_NAME}
-    image: sanniv/cloudide
+    image: sanniv/scriptbox
     volumes:
       - ./src:/app/src
       - /app/node_modules
@@ -52,7 +53,7 @@ services:
 
   queue_worker:
     container_name: queue_worker-${PROJECT_NAME}
-    image: sanniv/cloudide
+    image: sanniv/scriptbox
     volumes:
       - ./src:/app/src
       - /app/node_modules
@@ -98,8 +99,4 @@ echo "$DOCKER_COMPOSE_TEMPLATE" > "$COMPOSE_FILE"
 docker-compose -p "$PROJECT_NAME" -f "$COMPOSE_FILE" up -d
 
 # Print out project details
-echo "{
-  \"ALIAS\": \"$PROJECT_NAME\",
-  \"APP_PORT\": \"$APP_PORT\",
-  \"CACHE_PORT\": \"$REDIS_PORT\"
-}"
+echo -e "$APP_PORT"
