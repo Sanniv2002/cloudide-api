@@ -115,13 +115,6 @@ app.patch("/api/v1/stop", async (req, res) => {
     }
     const { stdout, stderr } = await execFile(pauseScriptPath, args);
 
-    if (stderr) {
-      res.status(500).json({
-        error: stderr,
-      });
-      return;
-    }
-
     await updateProjectStatus(alias, "STOPPED", { stoppedAt: new Date() });
 
     res.status(200).json({
@@ -157,13 +150,6 @@ app.delete("/api/v1/terminate", async (req, res) => {
       return;
     }
     const { stdout, stderr } = await execFile(terminateScriptPath, args);
-
-    if (stderr) {
-      res.status(500).json({
-        error: stderr,
-      });
-      return;
-    }
 
     await updateProjectStatus(alias, "TERMINATED", {
       stoppedAt: new Date(),
