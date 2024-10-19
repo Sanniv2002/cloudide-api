@@ -1,3 +1,40 @@
+/**
+ * Project Database Utilities using Prisma ORM
+ * 
+ * This file provides utility functions for interacting with the `projects` table in the database using Prisma.
+ * It allows the creation, fetching, and updating of project records, including handling custom statuses and error responses.
+ * 
+ * Functions in this file include:
+ * - `createProject`: Creates a new project record in the database.
+ * - `getProjectByAlias`: Fetches a project by its alias.
+ * - `updateProjectStatus`: Updates the status of a project and allows additional fields to be updated.
+ * - `getAllProjects`: Retrieves all projects with basic error handling.
+ * 
+ * @function createProject
+ * @param {string} alias - The unique alias of the project.
+ * @param {string} environment - The environment (e.g., "development", "production") of the project.
+ * @param {number} port - The port number the project is running on.
+ * @param {string} name - The name of the project.
+ * @param {string} dns_record_id - The DNS record ID associated with the project.
+ * @param {number} userId - The ID of the user who created the project.
+ * @returns {Promise<Object>} - A promise that resolves with the newly created project.``
+ * 
+ * @function getProjectByAlias
+ * @param {string} alias - The unique alias of the project.
+ * @returns {Promise<Object | null>} - A promise that resolves with the project if found, or `null` if not found.
+ * 
+ * @function updateProjectStatus
+ * @param {string} alias - The unique alias of the project.
+ * @param {string} status - The new status of the project (must be a valid `Status` enum value).
+ * @param {Record<string, any>} [updateData={}] - Optional additional fields to update.
+ * @returns {Promise<Object>} - A promise that resolves with the updated project.
+ * 
+ * @function getAllProjects
+ * @returns {Promise<{ success: boolean, data: Object[] | {} }>} - A promise that resolves with an object containing the success status and data (projects or empty).
+ * 
+ */
+
+
 import { PrismaClient } from "@prisma/client";
 import { Status } from "@prisma/client";
 

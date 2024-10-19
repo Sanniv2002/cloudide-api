@@ -1,3 +1,23 @@
+/**
+ * Utility functions for interacting with the Cloudflare DNS management API.
+ *
+ * This file provides functions to manage DNS records on Cloudflare, such as
+ * adding or deleting records programmatically. It utilizes the Cloudflare
+ * API, making HTTP requests with authentication headers.
+ *
+ * Functions in this utility file include:
+ * - `addCloudflareDNSRecord`: Adds a new DNS record to Cloudflare for the specified zone.
+ * - `deleteCloudflareDNSRecord`: Deletes an existing DNS record from Cloudflare for the specified zone.
+ *
+ * @requires node-fetch - Used for making API calls to Cloudflare.
+ *
+ * @param {string} name - The DNS name (e.g., subdomain or domain).
+ * @param {string} content - The content for the DNS record (e.g., IP address for A records).
+ * @param {string} zoneId - The ID of the Cloudflare zone (domain) where the DNS record is being managed.
+ * @param {string} authKey - The API key used to authenticate requests to Cloudflare.
+ */
+
+
 export const createDNSRecordInCloudflareZone = async (
   type: string,
   name: string,
@@ -48,7 +68,9 @@ export const createDNSRecordInCloudflareZone = async (
   }
 };
 
-export const removeDNSRecordInCloudflareZone = async (recordId: string | null) => {
+export const removeDNSRecordInCloudflareZone = async (
+  recordId: string | null
+) => {
   const myHeaders = new Headers();
 
   const zoneId = process.env.ZONE_ID;

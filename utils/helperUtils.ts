@@ -1,3 +1,25 @@
+/**
+ * Utility functions for network operations and alias generation.
+ * 
+ * This file provides utility functions for:
+ * - Dynamically finding a free port on the local machine.
+ * - Generating a random alias string with a specified length.
+ * 
+ * Functions in this file include:
+ * - `findFreePort`: Returns a promise that resolves with a free port number.
+ * - `generateAlias`: Generates a random alphanumeric string, often used for creating aliases.
+ * 
+ * @function findFreePort
+ * @returns {Promise<number>} - A promise that resolves with a free port number found on the system.
+ * @throws {Error} - If the port discovery encounters an issue, the promise will reject with the error.
+ * 
+ * @function generateAlias
+ * @param {number} length - The length of the alias string to generate.
+ * @returns {string} - A randomly generated alphanumeric string.
+ * 
+ */
+
+
 import * as net from 'net';
 
 export function findFreePort(): Promise<number> {
