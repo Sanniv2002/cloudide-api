@@ -96,7 +96,7 @@ COMPOSE_FILE="${COMPOSE_DIR}/docker-compose-${PROJECT_NAME}.yml"
 echo "$DOCKER_COMPOSE_TEMPLATE" > "$COMPOSE_FILE"
 
 # Navigate to the compose-files directory and run the docker-compose file
-docker-compose -p "$PROJECT_NAME" -f "$COMPOSE_FILE" up -d
+sudo docker-compose -p "$PROJECT_NAME" -f "$COMPOSE_FILE" up -d
 
 # Print out project details
 echo -e "$APP_PORT"

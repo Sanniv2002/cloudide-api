@@ -2,4 +2,4 @@
 
 ALIAS=$1
 
-docker-compose -p "$ALIAS" -f "compose-files/docker-compose-${ALIAS}.yml" down
+sudo docker-compose -p "$ALIAS" -f "compose-files/docker-compose-${ALIAS}.yml" down
