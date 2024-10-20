@@ -8,8 +8,12 @@ import {
   getProjectByAlias,
   updateProjectStatus,
 } from "./utils/db";
-import { generateAlias, findFreePort } from "./utils/helperUtils";
-import { createDNSRecordInCloudflareZone, removeDNSRecordInCloudflareZone } from "./utils/cloudflare";
+import { generateAlias, findFreePort, sendMessage } from "./utils/helperUtils";
+import {
+  createDNSRecordInCloudflareZone,
+  removeDNSRecordInCloudflareZone,
+} from "./utils/cloudflare";
+import { addResourceInNginxConf, clearResourceInNginxConf } from "./utils/nginxConfig";
 
 const app = express();
 const initScriptPath = "./init.sh";
@@ -35,27 +39,35 @@ app.post("/api/v1/start", async (req, res) => {
   const args = [alias, environment, PORT];
 
   try {
-    //Create DNS Record for the alias
+    // Create DNS Record for the alias
+    sendMessage(res, { status: "Starting DNS record creation..." });
     const result = await createDNSRecordInCloudflareZone(
       "A",
       alias,
       process.env.EC2_URI as string,
       `DNS Record for resource aliased as ${alias}`
     );
+    sendMessage(res, { status: "DNS record created successfully!" });
 
     const dns_record_id = result.result.id;
+    // Add resource in nginx config
+    await addResourceInNginxConf(alias, PORT);
 
     // Create entry in db
     await createProject(alias, environment, PORT, name, dns_record_id, userId);
+    sendMessage(res, { status: "Resource added in databse" });
 
+    sendMessage(res, { status: "Booting resource..." });
     const { stdout } = await execFile(initScriptPath, args);
-    
+    sendMessage(res, { status: "Resource succesfully started!" });
+
     await updateProjectStatus(alias, "RUNNING");
 
     res.status(200).json({
       alias: alias,
     });
   } catch (error: any) {
+    sendMessage(res, { status: "Failed to start resource" });
     res.status(500).json({
       error: error.message || error,
     });
@@ -161,7 +173,7 @@ app.delete("/api/v1/terminate", async (req, res) => {
       return;
     }
 
-    await removeDNSRecordInCloudflareZone(project.dns_record_id)
+    await removeDNSRecordInCloudflareZone(project.dns_record_id);
 
     const { stdout, stderr } = await execFile(terminateScriptPath, args);
 
@@ -215,23 +227,27 @@ app.get("/api/v1/resources", async (_, res) => {
   res.status(200).json(result);
 });
 
-app.get("/list_dns_records", (_, res) => {
-  const myHeaders = new Headers();
-  myHeaders.append("Content-Type", "application/json");
-  myHeaders.append("X-Auth-Key", process.env.X_Auth_Key as string);
-  myHeaders.append("X-Auth-Email", process.env.X_Auth_Email as string);
-  const requestOptions = {
-    method: "GET",
-    headers: myHeaders,
-    redirect: "follow" as RequestRedirect,
-  };
-  fetch(
-    `https://api.cloudflare.com/client/v4/zones/${process.env.ZONE_ID}/dns_records`,
-    requestOptions
-  )
-    .then((response) => response.text())
-    .then((result) => res.status(200).json(JSON.parse(result)))
-    .catch((error) => console.error(error));
+app.put("/api/v1/regenerate_config", async (_, res) => {
+    try {
+        const result = await getAllProjects();
+        await clearResourceInNginxConf();
+
+        const projects = Array.isArray(result.data) ? result.data : [];
+
+        for (const project of projects) {
+            if (project.status !== 'TERMINATED') {
+                await addResourceInNginxConf(project.alias, project.PORT);
+            }
+        }
+
+        res.status(200).json(result);
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            message: error.message || "An error occurred while regenerating the configuration.",
+        });
+    }
 });
+
 
 export default app;
