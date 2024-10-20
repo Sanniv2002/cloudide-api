@@ -14,14 +14,17 @@ import {
   removeDNSRecordInCloudflareZone,
 } from "./utils/cloudflare";
 import { addResourceInNginxConf, clearResourceInNginxConf } from "./utils/nginxConfig";
+import { limiter } from "./config/rateLimit";
 
 const app = express();
-const initScriptPath = "./init.sh";
-const resumeScriptPath = "./resume.sh";
-const pauseScriptPath = "./pause.sh";
-const terminateScriptPath = "./terminate.sh";
+const initScriptPath = "./scripts/init.sh";
+const resumeScriptPath = "./scripts/resume.sh";
+const pauseScriptPath = "./scripts/pause.sh";
+const terminateScriptPath = "./scripts/terminate.sh";
 const execFile = promisify(child_process.execFile);
 
+
+app.use(limiter)
 app.use(CORS());
 app.use(express.json());
 
@@ -55,7 +58,7 @@ app.post("/api/v1/start", async (req, res) => {
 
     // Create entry in db
     await createProject(alias, environment, PORT, name, dns_record_id, userId);
-    sendMessage(res, { status: "Resource added in databse" });
+    sendMessage(res, { status: "Resource added in database" });
 
     sendMessage(res, { status: "Booting resource..." });
     const { stdout } = await execFile(initScriptPath, args);
