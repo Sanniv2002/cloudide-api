@@ -25,7 +25,7 @@
 import { promisify } from "util";
 import child_process from "child_process";
 
-const configScriptPath = "../scripts/nginx_config.sh";
+const configScriptPath = "./scripts/nginx_config.sh";
 const execFile = promisify(child_process.execFile);
 
 export const addResourceInNginxConf = async (alias: string, port: number) => {

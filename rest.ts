@@ -243,7 +243,9 @@ app.put("/api/v1/regenerate_config", async (_, res) => {
             }
         }
 
-        res.status(200).json(result);
+        res.status(200).json({
+            message: "Resources refreshed and cleared"
+        });
     } catch (error: any) {
         res.status(500).json({
             success: false,
