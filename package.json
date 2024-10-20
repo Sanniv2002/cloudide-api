@@ -19,7 +19,8 @@
     "@prisma/client": "5.21.1",
     "cors": "^2.8.5",
     "express": "^4.21.1",
-    "express-rate-limit": "^7.4.1"
+    "express-rate-limit": "^7.4.1",
+    "pm2": "^5.4.2"
   },
   "scripts": {
     "seed": "esbuild prisma/seed.ts --outfile=node_modules/tmp-seed.cjs --bundle --format=cjs --external:prisma --external:@prisma/client && node node_modules/tmp-seed.cjs --preview-feature",
