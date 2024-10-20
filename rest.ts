@@ -5,6 +5,7 @@ import child_process from "child_process";
 import {
   createProject,
   getAllProjects,
+  getAllProjectsByUserId,
   getProjectByAlias,
   updateProjectStatus,
 } from "./utils/db";
@@ -196,6 +197,22 @@ app.delete("/api/v1/terminate", async (req, res) => {
     });
   }
 });
+
+app.get("/api/v1/resources/:userId", async (req, res) => {
+  const userId = req.params.userId
+  try {
+    const resources = await getAllProjectsByUserId(parseInt(userId));
+    res.status(200).json(resources);
+
+  } catch (error: any) {
+    console.error("Error fetching project by alias:", error.message || error);
+    res.status(500).json({
+      success: false,
+      message: "An error occurred while fetching the project",
+      error: error.message || error,
+    });
+  }
+})
 
 app.get("/api/v1/resource/:alias", async (req, res) => {
   const alias = req.params.alias;

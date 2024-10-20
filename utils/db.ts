@@ -102,3 +102,23 @@ export const getAllProjects = async () => {
     }
   }
 };
+
+export const getAllProjectsByUserId = async (userId: number) => {
+  try {
+    const projects = await prisma.projects.findMany({
+      where: {
+        authorId: userId,
+      },
+    });
+    return {
+      success: true,
+      data: projects,
+    };
+  } catch (e: any) {
+    return {
+      success: false,
+      data: {},
+      error: e.message, 
+    };
+  }
+}
