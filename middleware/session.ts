@@ -4,4 +4,9 @@ export const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET as string,
   resave: true,
   saveUninitialized: true,
+  cookie: {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'none',
+}
 });
