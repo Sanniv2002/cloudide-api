@@ -11,20 +11,21 @@ import apiRoutes from './routes/api';
 const app = express();
 
 const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',').map(origin=>origin);
-app.use(CORS(
-    {
-        origin: (origin, callback) => {
-            allowedOrigins!.includes(origin as string) ? callback(null, true) : callback(new Error('Not allowed by CORS'))
-        },
-        allowedHeaders: [
-          'access-control-allow-origin',
-          'authorization',
-          'Pragma',
-          'contact',
-        ],
-        exposedHeaders: []
-      }
-));
+// app.use(CORS(
+//     {
+//         origin: (origin, callback) => {
+//             allowedOrigins!.includes(origin as string) ? callback(null, true) : callback(new Error('Not allowed by CORS'))
+//         },
+//         allowedHeaders: [
+//           'access-control-allow-origin',
+//           'authorization',
+//           'Pragma',
+//           'contact',
+//         ],
+//         exposedHeaders: []
+//       }
+// ));
+app.use(CORS())
 app.get('/', (_, res) => {
   res.status(200).json({ message: 'Server is healthy' });
 });
