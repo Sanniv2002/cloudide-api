@@ -30,7 +30,8 @@ const terminateScriptPath = './scripts/terminate.sh';
 const execFile = promisify(child_process.execFile);
 
 router.post('/start', async (req: any, res: any) => {
-  const { userId, environment, name } = req.body;
+  const { environment, name } = req.body;
+  const userId = req.user.id
   const alias = generateAlias(5);
 
   const PORT = await findFreePort();
