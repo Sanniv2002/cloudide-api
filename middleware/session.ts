@@ -2,11 +2,11 @@ import session from 'express-session';
 
 export const sessionMiddleware = session({
   secret: process.env.SESSION_SECRET as string,
-  resave: false,
-  saveUninitialized: true,
   cookie: {
-    httpOnly: true,
-    secure: false,
-    sameSite: 'none',
-}
+    secure: process.env.NODE_ENV === "production" ? true : "auto",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    maxAge: 30 * 24 * 60 * 60 * 1000,
+   },
+  resave: false,
+  saveUninitialized: false,
 });

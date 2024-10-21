@@ -29,6 +29,13 @@ const pauseScriptPath = './scripts/pause.sh';
 const terminateScriptPath = './scripts/terminate.sh';
 const execFile = promisify(child_process.execFile);
 
+router.get("/whoami", (req: any, res: any) => {
+  res.json({
+    ...req.user,
+    isLoggedIn: true
+  })
+})
+
 router.post('/start', async (req: any, res: any) => {
   const { environment, name } = req.body;
   const userId = req.user.id

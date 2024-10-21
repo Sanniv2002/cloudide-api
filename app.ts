@@ -10,22 +10,15 @@ import apiRoutes from './routes/api';
 
 const app = express();
 
-const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',').map(origin=>origin);
-// app.use(CORS(
-//     {
-//         origin: (origin, callback) => {
-//             allowedOrigins!.includes(origin as string) ? callback(null, true) : callback(new Error('Not allowed by CORS'))
-//         },
-//         allowedHeaders: [
-//           'access-control-allow-origin',
-//           'authorization',
-//           'Pragma',
-//           'contact',
-//         ],
-//         exposedHeaders: []
-//       }
-// ));
-app.use(CORS())
+const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',').map(
+  (origin) => origin,
+);
+const corsOptions = {
+  origin: allowedOrigins,
+  credentials: true,
+  optionSuccessStatus: 200,
+};
+app.use(CORS(corsOptions));
 app.get('/', (_, res) => {
   res.status(200).json({ message: 'Server is healthy' });
 });
@@ -35,6 +28,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(limiter);
 app.use(express.json());
+app.use(express.static("public"));
 
 app.use(authRoutes);
 app.use('/api/v1', apiRoutes);
