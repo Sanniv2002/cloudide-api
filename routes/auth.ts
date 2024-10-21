@@ -12,9 +12,17 @@ router.get(
 router.get(
   '/google/callback',
   passport.authenticate('google', {
-    successRedirect: process.env.SUCCESS_LOGIN_REDIRECT_URL,
     failureRedirect: '/auth/failure',
-  }),
+  }),  (req: any, res) => {
+    res.cookie('token', req.user.sessionToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      maxAge: 24 * 60 * 60 * 1000
+    });
+    
+    res.redirect(process.env.SUCCESS_LOGIN_REDIRECT_URL as string);
+  }
 );
 
 router.get('/auth/failure', (_, res) => {
