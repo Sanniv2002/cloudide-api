@@ -193,8 +193,8 @@ router.delete('/terminate', async (req: any, res: any) => {
   }
 });
 
-router.get('/resources/:userId', async (req: any, res: any) => {
-  const userId = req.params.userId;
+router.get('/resources', async (req: any, res: any) => {
+  const userId = req.user.id;
   try {
     const resources = await getAllProjectsByUserId(parseInt(userId));
     res.status(200).json(resources);
@@ -236,7 +236,7 @@ router.get('/resource/:alias', async (req: any, res: any) => {
   }
 });
 
-router.get('/resources', async (req: any, res: any) => {
+router.get('/list', async (req: any, res: any) => {
   req.user.role === 'ADMIN'
     ? res.status(200).json(await getAllProjects())
     : res.status(403).json({ message: 'Forbidden' });
