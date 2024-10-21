@@ -11,9 +11,10 @@ router.get(
 
 router.get(
   '/google/callback',
-  passport.authenticate('google', { session: true }, (req, res) => {
-    res.redirect(`${process.env.CLIENT_URL}`)
-  }),
+  passport.authenticate('google', { session: true }),
+  (req, res: any) => {
+    res.redirect(`${process.env.CLIENT_URL}`);
+  },
 );
 
 router.get('/auth/failure', (_, res) => {
@@ -25,7 +26,7 @@ router.get('/logout', function (req, res, next) {
     if (err) {
       return next(err);
     }
-    res.redirect('/');
+    res.redirect(`${process.env.LOGOUT_REDIRECT_URL}`);
   });
 });
 
