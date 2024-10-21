@@ -1,4 +1,4 @@
-import app from './rest'
+import app from './app'
 
 const PORT = 8080
 

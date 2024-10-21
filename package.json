@@ -6,7 +6,10 @@
     "@types/bun": "latest",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/express-session": "^1.18.0",
     "@types/node": "^22.7.6",
+    "@types/passport": "^1.0.16",
+    "@types/passport-google-oauth20": "^2.0.16",
     "esbuild": "^0.24.0",
     "prisma": "5.21.1",
     "ts-node": "^10.9.2",
@@ -19,8 +22,11 @@
     "@prisma/client": "5.21.1",
     "cors": "^2.8.5",
     "express": "^4.21.1",
-    "express-rate-limit": "^7.4.1",
-    "pm2": "^5.4.2"
+    "express-session": "^1.18.1",
+    "passport": "^0.7.0",
+    "passport-google-oauth20": "^2.0.0",
+    "pm2": "^5.4.2",
+    "rate-limiter-flexible": "^5.0.4"
   },
   "scripts": {
     "seed": "esbuild prisma/seed.ts --outfile=node_modules/tmp-seed.cjs --bundle --format=cjs --external:prisma --external:@prisma/client && node node_modules/tmp-seed.cjs --preview-feature",
