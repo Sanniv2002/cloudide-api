@@ -7,6 +7,7 @@ import './config/passport';
 
 import authRoutes from './routes/auth';
 import apiRoutes from './routes/api';
+import userRoutes from './routes/user'
 
 const app = express();
 
@@ -32,5 +33,6 @@ app.use(express.static("public"));
 
 app.use(authRoutes);
 app.use('/api/v1', apiRoutes);
+app.use('/user', userRoutes)
 
 export default app;
