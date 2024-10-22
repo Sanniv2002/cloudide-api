@@ -15,7 +15,7 @@ const allowedOrigins = process.env.ALLOWED_ORIGINS?.split(',').map(
   (origin) => origin,
 );
 const corsOptions = {
-  origin: allowedOrigins,
+  origin: 'https://script-box.vercel.app',
   credentials: true,
   optionSuccessStatus: 200,
 };
