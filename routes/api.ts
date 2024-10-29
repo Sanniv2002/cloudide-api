@@ -8,7 +8,7 @@ import {
   getProjectByAlias,
   updateProjectStatus,
 } from '../utils/db';
-import { generateAlias, findFreePort, sendMessage } from '../utils/helperUtils';
+import { generateAlias, findFreePort } from '../utils/helperUtils';
 import {
   createDNSRecordInCloudflareZone,
   removeDNSRecordInCloudflareZone,
@@ -50,14 +50,14 @@ router.post('/start', async (req: any, res: any) => {
 
   try {
     // Create DNS Record for the alias
-    sendMessage(res, { status: 'Starting DNS record creation...' });
+    // sendMessage(res, { status: 'Starting DNS record creation...' });
     const result = await createDNSRecordInCloudflareZone(
       'A',
       alias,
       process.env.EC2_URI as string,
       `DNS Record for resource aliased as ${alias}`,
     );
-    sendMessage(res, { status: 'DNS record created successfully!' });
+    // sendMessage(res, { status: 'DNS record created successfully!' });
 
     const dns_record_id = result.result.id;
     // Add resource in nginx config
@@ -65,11 +65,11 @@ router.post('/start', async (req: any, res: any) => {
 
     // Create entry in db
     await createProject(alias, environment, PORT, name, dns_record_id, userId);
-    sendMessage(res, { status: 'Resource added in database' });
+    // sendMessage(res, { status: 'Resource added in database' });
 
-    sendMessage(res, { status: 'Booting resource...' });
+    // sendMessage(res, { status: 'Booting resource...' });
     const { stdout } = await execFile(initScriptPath, args);
-    sendMessage(res, { status: 'Resource succesfully started!' });
+    // sendMessage(res, { status: 'Resource succesfully started!' });
 
     await updateProjectStatus(alias, 'RUNNING');
 
@@ -77,7 +77,6 @@ router.post('/start', async (req: any, res: any) => {
       alias: alias,
     });
   } catch (error: any) {
-    sendMessage(res, { status: 'Failed to start resource' });
     res.status(500).json({
       error: error.message || error,
     });
