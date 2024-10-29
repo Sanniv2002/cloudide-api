@@ -162,8 +162,8 @@ router.patch('/stop', async (req: any, res: any) => {
   }
 });
 
-router.delete('/terminate', async (req: any, res: any) => {
-  const { alias } = req.body;
+router.delete('/terminate/:alias', async (req: any, res: any) => {
+  const { alias } = req.params;
   const args = [alias];
 
   try {
